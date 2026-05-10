@@ -60,9 +60,11 @@ class moniteur:
             for lien in topologie.liens:
                nom=f"{lien.equipement1.nom}_{lien.equipement2.nom}"
                octet_totaux=self.trafic_liens.get(nom,0)
+               
                #usage=(bit_transmis/capacit_bit) *100
                bit_transmis=octet_totaux*8
                capacite_bit=lien.capacite*1e6  # convertir Mbps en bps
+               usage=(bit_transmis/capacite_bit)*100 if capacite_bit > 0 else 0
                f.write(f"lien{nom}:{usage:.2f}% (bande passante utilisée: {lien.bande_passante_utilisee} Mbps)\n")
 
                
@@ -71,5 +73,6 @@ class moniteur:
             for p in self.historique_paquet:
                 f.write(f"{p}\n")
             
-
+            f.write("\nFin du rapport d'exploitation\n")
+        print("Rapport d'exploitation généré: rapport_simnet.txt")
                 
