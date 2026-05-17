@@ -1,4 +1,4 @@
-
+from abc import ABC , abstractmethod
 
 
 class AdresseIP:
@@ -35,10 +35,7 @@ class AdresseIP:
         # On verifi si le nombre d'octet est égal à 4 conformement au format IPv4
         if len(octets) != 4:
             # On ecrit un message  d'erreur si le nombre d'octet est différentde 4
-            raise ValueError(f"L'adresse IPv4 doit avoir 4 octets et la votre a {len(octets)}"  )
-                
-          
-        
+            raise ValueError(f"L'adresse IPv4 doit avoir 4 octets et la vôtre a {len(octets)}")
         i = 0
         for octet in octets:
             i = i + 1
@@ -60,14 +57,17 @@ class AdresseIP:
         return self._ip
     
     @ip.setter
-    def ip(self, val=str):
+    def ip(self, val):
         """Definition du Setter sur l'adresse ip """
         if val is None:
             raise ValueError("Vous devez préciser l'adresse ip a ajouté")
-        val=val.strip()
         
         if not isinstance(val, str):
-            raise TypeError("Vous avez mal enregistré l'adresse ip. Le format correct est X.X.X.X avec X entre 0 et 255")
+            raise TypeError("L'adresse IP doit être une chaîne de caractères")
+        val=val.strip()
+        
+        if not val:
+            raise ValueError("Vous avez mal enregistré l'adresse IP. Le format correct est X.X.X.X avec X entre 0 et 255")
         
         self._ip = val
         self._valider_format()
@@ -76,16 +76,16 @@ class AdresseIP:
     def classe_ip(self):
         """Permet d'avoir la classe d'une adresse ip"""
         Octet1= int(self._ip.split('.')[0])
-        if Octet1 <127:
+        if 1<=Octet1 <=126:
             return "Classe A"
-        elif Octet1 <191:
+        elif 128<=Octet1 <=191:
             return "Classe B"
-        elif Octet1 <223:
+        elif 192<=Octet1 <=223:
             return "Classe C"
-        elif Octet1 <239:
+        elif 224<=Octet1 <=239:
             return "Classe D"
         else:
-            return "Class E"
+            return "Classe E"
 
     @property
     def est_privee(self):
@@ -93,19 +93,211 @@ class AdresseIP:
         Octet1= int(self._ip.split('.')[0])
         Octet2= int(self._ip.split('.')[1])
         if Octet1 ==10:
-            return "Adresse Privée"
-        elif Octet1 ==172 ((Octet2 ==16) or (Octet2 == 31)) :
-                return "Adresse Privée"
-        elif Octet1 ==192 & Octet2== 168:
-            return "Adresse Privée"
+            return True
+        elif Octet1 ==172 and((Octet2 ==16) or (Octet2 == 31)) :
+                return True
+        elif Octet1 ==192 and Octet2== 168:
+            return True
         
         else :
-            return "Adresse Public"
+            return False
+
+    def __str__(self):
+        priv = "Privée" if self.est_privee else "Publique"
+        return f"{self._ip}-- Type:{priv} (Classe {self.classe_ip})"
+    
+    
+    
+    
+#Création de la classe Equipement
+
+class Equipement(ABC):
+    """Classe destinée aux équipements """
+    
+    def __init__(self, nomE, marqueE, adresse_ip,statut:bool= False):
         
-     
+        """" Definition du Constructeur pour la classe Equipement """
         
+        # On vérifi si l'utilisateur n'a rien entré comme nom de l'équipement
+        if nomE is None:
+            raise ValueError("Vous devez entrer le nom")
+        # On vérifi si l'utilisateur n'a rien entré comme marque de l'équipement
+        if marqueE is None:
+            raise ValueError("Vous devez entrer une adresse IP")
+       
+        self._nom = nomE
+        self._marque = marqueE
+        self._statut= statut
+        self._adresse_ip =AdresseIP(adresse_ip)
+        
+    @abstractmethod
+    def description_du_materiel(self):
+        """" Retourne une description de l'équipement """
+        pass
+    
+    @property
+    def nom(self):
             
-                    
+        """" Definition du Getter sur le nom de l'équipement """
+            
+        return self._nom
+    @property
+    def marque(self):
+            
+        """" Definition du Getter sur de la marque de l'équipement """
+            
+        return self._marque
+    
+    def activer(self):
+        """Faire passer le statut d'un équipement à ACTIF"""
+     
+        self._statut= True
+       
+    def desactiver(self):
+        """Faire passer le statut d'un équipement à INACTIF""" 
+        self._statut=False
+        
+    def afficher_infos(self):
+        """ Pour afficher les information à prpos d'un équipement """
+        statut ="ACTIF" if self._statut else "INACTIF"
+        print(f"  Nom     : {self._nom}")
+        print(f"  Marque  :{self._marque}")
+        print(f"  Ip     : {self._adresse_ip}")
+        print(f"  Statut :{statut}")
+            
+    def __del__(self):
+        """Permet de supprimer un équipement de la topologie """
+        print(f"[DECONNEXION]{self._nom}({self._adresse_ip}) retiré du réseau")
+class Routeur(Equipement):
+    def __init__(self,nomE,marqueE,adresse_ip, nb_interface, statut:bool=True):
+        super().__init__(nomE, marqueE, adresse_ip, statut)       
+        self.__table_routage={}
+        
+        self._nb_interface= nb_interface
+        
+    def ajouter_route(self, destination, next_hop) :
+        """Ajoute une route vers une destination."""
+        # Validation des adresses IP
+        AdresseIP(destination)  # Lève une exception si invalide
+        AdresseIP(next_hop)
+        self.__table_routage[destination] = next_hop
+    
+    def trouver_prochain_saut(self, destination):
+        """Trouve le prochain saut pour une destination donnée."""
+        return self.__table_routage.get(destination)
+    
+    @property
+    def table_routage(self) :
+        return self.__table_routage.copy()
+    
+    def description_du_materiel(self) :
+        return f"Routeur avec {len(self.__table_routage)} route(s)"
+
+
+class Switch(Equipement):
+    """Switch avec gestion des VLANs."""
+    
+    def __init__(self, nomE, marqueE, adresse_ip,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip)
+        self.__vlans = [1]  # VLAN 1 par défaut
+    
+    def ajouter_vlan(self, vlan_id: int) :
+        """Ajoute un VLAN au switch."""
+        if vlan_id not in self.__vlans:
+            self.__vlans.append(vlan_id)
+    
+    def retirer_vlan(self, vlan_id: int):
+        """Retire un VLAN du switch."""
+        if vlan_id in self.__vlans and vlan_id != 1:
+            self.__vlans.remove(vlan_id)
+    
+    @property
+    def vlans(self) :
+        return self.__vlans.copy()
+    
+    def description_du_materiel(self) :
+        return f"Switch - VLANs: {self.__vlans}"
+
+
+class Serveur(Equipement):
+    """Serveur exposant des services."""
+    
+    def __init__(self, nomE, marqueE, adresse_ip, statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip)
+        self.__services= []
+    
+    def ajouter_service(self, service: str) :
+        """Ajoute un service au serveur."""
+        self.__services.append(service)
+    
+    @property
+    def services(self) :
+        return self.__services.copy()
+    
+    def description_du_materiel(self) :
+        services_str = ', '.join(self.__services) if self.__services else 'aucun'
+        return f"Serveur - Services: {services_str}"
+
+
+class Firewall(Equipement):
+    """Firewall avec règles de filtrage."""
+    
+    def __init__(self, nomE, marqueE,adresse_ip, statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip)
+        self.__regles= []  # Les règles seront détaillées dans le Module 3
+    
+    def ajouter_regle(self, regle: dict) :
+        """Ajoute une règle de filtrage."""
+        self.__regles.append(regle)
+    
+    @property
+    def regles(self):
+        return self.__regles.copy()
+    
+    def description_du_materiel(self) :
+        return f"Firewall - {len(self.__regles)} règle(s)"
+
+
+class PointAccesWiFi(Equipement):
+    """Point d'accès WiFi."""
+    
+    def __init__(self,  nomE, marqueE, adresse_ip,statut: bool = True, ssid= ""):
+        super().__init__( nomE, marqueE, adresse_ip)
+        self.__ssid = ssid
+    
+    @property
+    def ssid(self) :
+        return self.__ssid
+    
+    @ssid.setter
+    def ssid(self, valeur):
+        self.__ssid = valeur
+    
+    def description_du_materiel(self) :
+        ssid_str = self.__ssid if self.__ssid else 'non configuré'
+        return f"Point d'accès WiFi - SSID: {ssid_str}"
+
+
+class TerminalClient(Equipement):
+    """Terminal client (ordinateur, smartphone, etc.)."""
+    
+    def __init__(self, nomE, marqueE, adresse_ip, statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip)
+        self.__trafic_genere = 0  # Pour les statistiques
+    
+    def envoyer_donnees(self, taille):
+        """Simule l'envoi de données."""
+        self.__trafic_genere += taille
+    
+    @property
+    def trafic_genere(self) :
+        return self.__trafic_genere
+    
+    def description_du_materiel(self) :
+        return "Terminal client"  
+
+            
+                  
                
         
     
