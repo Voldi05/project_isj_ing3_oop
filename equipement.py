@@ -114,7 +114,7 @@ class AdresseIP:
 class Equipement(ABC):
     """Classe destinée aux équipements """
     
-    def __init__(self, nomE, marqueE, adresse_ip,statut:bool= False):
+    def __init__(self, nomE, marqueE, adresse_ip,statut:bool= False,nb_interfaces=0):
         
         """" Definition du Constructeur pour la classe Equipement """
         
@@ -129,6 +129,8 @@ class Equipement(ABC):
         self._marque = marqueE
         self._statut= statut
         self._adresse_ip =AdresseIP(adresse_ip)
+        self._nb_interfaces = nb_interfaces # Contient le nombre d'interface d'un equipement
+        self._interfaces_occupees = 0
         
     @abstractmethod
     def description_du_materiel(self):
@@ -164,16 +166,51 @@ class Equipement(ABC):
         print(f"  Marque  :{self._marque}")
         print(f"  Ip     : {self._adresse_ip}")
         print(f"  Statut :{statut}")
+        print(f" Interfaces(occpés/Total): {self._interfaces_occupees}/{self._nb_interfaces}")
             
     def __del__(self):
         """Permet de supprimer un équipement de la topologie """
         print(f"[DECONNEXION]{self._nom}({self._adresse_ip}) retiré du réseau")
+        
+    def _liberer_interface(self):
+        """C'est une méthode protégée. Permet de liberer une interface. Elle ne peut pas directement être utiliser par l'utilisateur .
+              Elle est utiliser dans le fichier topologie par la fonction Supprimer_lien """
+        if self._interfaces_occupees > 0:
+            self._interfaces_occupees -=1
+            return True
+        return False
+    
+    def  _occuper_interface(self):
+        """C'est une méthode protégée.
+                Elle est utiliser dans le fichier topologie par la fonction Ajouter_lien """
+        
+        if self._interfaces_occupees < self._nb_interfaces:
+            self._interfaces_occupees +=1
+            return True
+        return False
+    
+    @property
+    def nb_interface_equipement(self):
+        """ Donne le nombre total d'interface d'un équipement """
+        
+        return self._nb_interfaces
+    @property
+    def interfaces_libres(self):
+        """ Nombres d'intefaces libres"""
+        
+        return self._nb_interfaces- self._interfaces_occupees
+    
+    def a_interface_libre(self):
+    
+        return self._interfaces_occupees< self._nb_interfaces
+       
+         
 class Routeur(Equipement):
-    def __init__(self,nomE,marqueE,adresse_ip, nb_interface, statut:bool=True):
-        super().__init__(nomE, marqueE, adresse_ip, statut)       
+    def __init__(self,nomE,marqueE,adresse_ip, nb_interfaces, statut:bool=True):
+        super().__init__(nomE, marqueE, adresse_ip, statut, nb_interfaces)       
         self.__table_routage={}
         
-        self._nb_interface= nb_interface
+        
         
     def ajouter_route(self, destination, next_hop) :
         """Ajoute une route vers une destination."""
@@ -197,9 +234,10 @@ class Routeur(Equipement):
 class Switch(Equipement):
     """Switch avec gestion des VLANs."""
     
-    def __init__(self, nomE, marqueE, adresse_ip,statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip)
+    def __init__(self, nomE, marqueE,adresse_ip, nb_interfaces,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
         self.__vlans = [1]  # VLAN 1 par défaut
+        
     
     def ajouter_vlan(self, vlan_id: int) :
         """Ajoute un VLAN au switch."""
@@ -222,9 +260,10 @@ class Switch(Equipement):
 class Serveur(Equipement):
     """Serveur exposant des services."""
     
-    def __init__(self, nomE, marqueE, adresse_ip, statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip)
+    def __init__(self, nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
         self.__services= []
+        
     
     def ajouter_service(self, service: str) :
         """Ajoute un service au serveur."""
@@ -242,9 +281,10 @@ class Serveur(Equipement):
 class Firewall(Equipement):
     """Firewall avec règles de filtrage."""
     
-    def __init__(self, nomE, marqueE,adresse_ip, statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip)
+    def __init__(self, nomE, marqueE,adresse_ip, nb_interfaces,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
         self.__regles= []  # Les règles seront détaillées dans le Module 3
+        
     
     def ajouter_regle(self, regle: dict) :
         """Ajoute une règle de filtrage."""
@@ -261,9 +301,10 @@ class Firewall(Equipement):
 class PointAccesWiFi(Equipement):
     """Point d'accès WiFi."""
     
-    def __init__(self,  nomE, marqueE, adresse_ip,statut: bool = True, ssid= ""):
-        super().__init__( nomE, marqueE, adresse_ip)
+    def __init__(self,  nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True, ssid= ""):
+        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
         self.__ssid = ssid
+        
     
     @property
     def ssid(self) :
@@ -281,9 +322,10 @@ class PointAccesWiFi(Equipement):
 class TerminalClient(Equipement):
     """Terminal client (ordinateur, smartphone, etc.)."""
     
-    def __init__(self, nomE, marqueE, adresse_ip, statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip)
+    def __init__(self, nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
         self.__trafic_genere = 0  # Pour les statistiques
+        
     
     def envoyer_donnees(self, taille):
         """Simule l'envoi de données."""
@@ -295,6 +337,7 @@ class TerminalClient(Equipement):
     
     def description_du_materiel(self) :
         return "Terminal client"  
+
 
             
                   
