@@ -53,9 +53,8 @@ class moniteur:
                 #etat des equipements(actif ou inactif)
                 f.write("-----Statut des équipements-----:\n")
                 for eq in topologie.equipements:
-                    # Sécurisation du statut pour s'adapter aux variables de equipement.py
-                    statut_brut = getattr(eq, '_Equipement__statut', True)
-                    statut_str = "ACTIF" if statut_brut else "INACTIF"
+                    # On accède directement à l'attribut _statut initialisé dans le constructeur
+                    statut_str = "ACTIF" if eq._statut else "INACTIF"
                     f.write(f"Equipement:{eq.nom:<12}| statut:{statut_str}\n")
                     
                 #historique de trafic par equipement
