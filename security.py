@@ -1,8 +1,3 @@
-
-# security.py — Module de sécurité réseau
-# Groupe 5 — Projet SIMNet
-# Auteur : Manuella Ntandzi
-
 from equipement import Firewall as FirewallBase
 import datetime
 import hashlib
