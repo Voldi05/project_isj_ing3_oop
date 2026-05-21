@@ -1,4 +1,4 @@
-from equipement import Equipement, Routeur, Switch, Serveur, Firewall, PointAccesWiFi, TerminalClient
+from equipements import Equipement, Routeur, Switch, Serveur, Firewall, PointAccesWiFi, TerminalClient
 
 
 class Lien:

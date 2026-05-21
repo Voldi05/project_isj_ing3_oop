@@ -114,7 +114,8 @@ class AdresseIP:
 class Equipement(ABC):
     """Classe destinée aux équipements """
     
-    def __init__(self, nomE, marqueE, adresse_ip,statut:bool= False,nb_interfaces=0):
+    _nb_equipements=0
+    def __init__(self, nomE, marqueE, adresse_ip,nb_interfaces=0, statut:bool= False):
         
         """" Definition du Constructeur pour la classe Equipement """
         
@@ -131,6 +132,7 @@ class Equipement(ABC):
         self._adresse_ip =AdresseIP(adresse_ip)
         self._nb_interfaces = nb_interfaces # Contient le nombre d'interface d'un equipement
         self._interfaces_occupees = 0
+        Equipement._nb_equipements+=1
         
     @abstractmethod
     def description_du_materiel(self):
@@ -207,7 +209,7 @@ class Equipement(ABC):
          
 class Routeur(Equipement):
     def __init__(self,nomE,marqueE,adresse_ip, nb_interfaces, statut:bool=True):
-        super().__init__(nomE, marqueE, adresse_ip, statut, nb_interfaces)       
+        super().__init__(nomE, marqueE, adresse_ip, nb_interfaces, statut)       
         self.__table_routage={}
         
         
@@ -235,7 +237,7 @@ class Switch(Equipement):
     """Switch avec gestion des VLANs."""
     
     def __init__(self, nomE, marqueE,adresse_ip, nb_interfaces,statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
         self.__vlans = [1]  # VLAN 1 par défaut
         
     
@@ -261,7 +263,7 @@ class Serveur(Equipement):
     """Serveur exposant des services."""
     
     def __init__(self, nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
         self.__services= []
         
     
@@ -282,7 +284,7 @@ class Firewall(Equipement):
     """Firewall avec règles de filtrage."""
     
     def __init__(self, nomE, marqueE,adresse_ip, nb_interfaces,statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
         self.__regles= []  # Les règles seront détaillées dans le Module 3
         
     
@@ -301,8 +303,8 @@ class Firewall(Equipement):
 class PointAccesWiFi(Equipement):
     """Point d'accès WiFi."""
     
-    def __init__(self,  nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True, ssid= ""):
-        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
+    def __init__(self,  nomE, marqueE, adresse_ip, nb_interfaces,  ssid= "", statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
         self.__ssid = ssid
         
     
@@ -323,7 +325,7 @@ class TerminalClient(Equipement):
     """Terminal client (ordinateur, smartphone, etc.)."""
     
     def __init__(self, nomE, marqueE, adresse_ip, nb_interfaces,statut: bool = True):
-        super().__init__( nomE, marqueE, adresse_ip, statut, nb_interfaces)
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
         self.__trafic_genere = 0  # Pour les statistiques
         
     

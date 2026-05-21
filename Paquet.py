@@ -3,7 +3,7 @@ paquets.py — Paquets réseau et simulation de trafic pour SIMNet.
 """
 
 from datetime import datetime
-from equipement import AdresseIP
+from equipements import AdresseIP
 
 PROTOCOLES_VALIDES = ("TCP", "UDP", "ICMP")
 
