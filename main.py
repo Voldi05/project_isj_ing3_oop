@@ -3,17 +3,21 @@ import equipements
 import moniteur
 import topologie
 import securite
+import paquets
 
 def menu():
     print("*"*5 + " Bienvenue dans le simulateur de réseau du groupe YAMEN" + "*"*5)
     print("1- Equipements et liens")
     print("2- Affichage de la topologie")
-    print("3- Paquets")
-    print("4- Générer le rapport")
-    print("5- Quitter")
+    print("3- Envoi de paquets et visualisation")
+    print("4- Journal du firewall")
+    print("5- Affichage de statistiques")
+    print("6- Générer le rapport")
+    print("7- Quitter")
 
 Continue=True #qui va permettre de gérer l'arret
 Topo=topologie.Topologie() #définition de notre topologie
+monitor=moniteur.Moniteur() #definition d'un moniteur qui servira à afficher le rapport
 
 while (Continue):
     os.system("cls")
@@ -103,6 +107,7 @@ while (Continue):
             else:
                 bp=float (input("Entrer la bande passante: "))
                 latence=float (input("Entrer la latence: "))
+                link=topologie.Lien(equip1, equip2, bp, latence)
                 Topo.ajouter_lien(equip1, equip2, bp, latence)
             os.system("pause")
             
@@ -115,27 +120,44 @@ while (Continue):
                 print("Il ne s'agit pas d'un équipement")
             os.system("pause")
         elif ch1==4: #suppression d'un lien
-            a=0
-            #je sais pas encore quoi choisir pour identifier le lien à supprimer
+            ad_eq1=input("Entrer l'adresse IP du premier équipement: ")
+            ad_eq2=input("Entrer l'adresse IP du deuxième équipement: ")
+            equip1=Topo.trouver_equipement(ad_eq1)
+            equip2=Topo.trouver_equipement(ad_eq2)
+            if equip1==None or equip2==None:
+                print("L'un des équipements que vous avez entré n'existe pas ! Impossible de supprimer ce lien ! ")
+            #####revenir ici
+            
             os.system("pause")
         else:
             print("Choix invalide !")
             os.system("pause")
 
-    elif choix==2:
-        a=0
-    elif choix==3:
+    elif choix==2: #afficher la topologie
+        Topo.afficher_topologie()
+        os.system("pause")
+        
+    elif choix==3: #envoi des paquets et vsiualisation de leur parcours, on va utiliser le fichier paquets.py
         print("Dans cette rubrique, vous pourrez envoyer des paquets et visualiser leur parcours")
         adresse=input("Avec qui souhaitez-vous communiquer ?")
         #apès j'appelle la focntion d'envoi des paquets avec toutes les vérifcations utiles: validité de l'adresse IP, si elle appartient à un hote du réseau, publique ou privée
         os.system("pause")
-    elif choix==4:
-        #ici je vais appeler la fonction de génération d'un rapport qui aura été écrite dans le module 4
+        
+    elif choix==4: #journal du firewall
         os.system("pause")
-    elif choix==5:
+        
+    elif choix==5:#affichage de statistiques
+        os.system("pause")
+        
+    elif choix==6: #rapport
+        monitor.generer_rapport(Topo)
+        os.system("pause")
+        
+    elif choix==7: #quitter
         print("Aurevoir et à bientôt !!!")
         Continue=False
         os.system("pause")
+        
     else:
-        print("Les choix disponibles vont de 1 jusqu'à 5")
+        print("Les choix disponibles vont de 1 jusqu'à 7")
         os.system("pause")
