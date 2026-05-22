@@ -1,114 +1,305 @@
-"""
-paquets.py — Paquets réseau et simulation de trafic pour SIMNet.
-"""
+import os
+import equipements
+import moniteur
+import topologie
+import securite
+import paquets
 
-from datetime import datetime
-from equipements import AdresseIP
+# Menu principal
+def menu():
+    print("*"*5 + " Bienvenue dans le SIMNET de réseau du groupe YAMEN" + "*"*5)
+    print("1- Equipements et liens")
+    print("2- Affichage de la topologie")
+    print("3- Envoi de paquets et visualisation")
+    print("4- Journal du firewall")
+    print("5- Rapport et statistiques")
+    print("6- Quitter")
 
-PROTOCOLES_VALIDES = ("TCP", "UDP", "ICMP")
+# Déclaration des variables globales de la simulation
+Continue = True                       
+Topo = topologie.Topologie()          
+monitor = moniteur.moniteur()         
+simul = paquets.Simulateur(Topo, monitor) 
 
-class Paquet:
-    """Représente un paquet réseau circulant entre deux équipements."""
-
-    _compteur = 0  # Identifiant unique auto-incrémenté
-
-    def __init__(self, source: str, destination: str, 
-                 protocole: str, taille: int, priorite: int):
+while Continue:
+    os.system("cls" if os.name == "nt" else "clear")
+    menu()
+    
+    while True:
+        try:
+            choix = int(input("Faites un choix s'il-vous-plaît: "))
+            break
+        except ValueError:
+            print("Erreur : Veuillez entrer un chiffre valide entre 1 et 6.")
+            
+    os.system("cls" if os.name == "nt" else "clear")
+    
+    if choix == 1:
+        print("Dans cette rubrique, vous pourrez ajouter/supprimer des liens ou des équipements")
+        print("1- Ajouter un équipement")
+        print("2- Ajouter un lien")
+        print("3- Supprimer un équipement")
+        print("4- Supprimer un lien")
         
-        # Validation des adresses via la classe AdresseIP du module equipement
-        self._source = source
-        self._destination = destination
-
-        # Validation du protocole
-        if protocole not in PROTOCOLES_VALIDES:
-            raise ValueError(f"Protocole invalide : {protocole}")
-        self._protocole = protocole
-
-        # Validation de la taille
-        if not isinstance(taille, int) or taille <= 0:
-            raise ValueError("La taille doit être un entier positif")
-        self._taille = taille
-
-        # Validation de la priorité
-        if not isinstance(priorite, int) or not (1 <= priorite <= 5):
-            raise ValueError("La priorité doit être comprise entre 1 et 5")
-        self._priorite = priorite
-
-        # Métadonnées
-        Paquet._compteur += 1
-        self._id = Paquet._compteur
-        self._horodatage = datetime.now()
-
-    @property
-    def source(self) -> str:
-        return self._source.ip
-
-    @property
-    def destination(self) -> str:
-        return self._destination.ip
-
-    @property
-    def protocole(self) -> str:
-        return self._protocole
-
-    @property
-    def taille(self) -> int:
-        return self._taille
-
-    def __str__(self) -> str:
-        return (f"Paquet#{self._id} [{self._protocole}] "
-                f"{self.source} -> {self.destination} "
-                f"({self._taille} octets)")
-
-
-class Simulateur:
-    """Gère la simulation de trafic et l'acheminement."""
-
-    def __init__(self, topologie, moniteur):
-        self._topologie = topologie
-        self._moniteur = moniteur
-        self._historique = []
-
-    def envoyer_paquet(self, paquet: Paquet) -> bool:
-        print(f"\n--- Simulation d'envoi du paquet {paquet._id} ---")
+        while True:
+            try:
+                ch1 = int(input("Que souhaitez-vous faire ? "))
+                break
+            except ValueError:
+                print("Erreur : Veuillez entrer un chiffre valide.")
+                
+        os.system("cls" if os.name == "nt" else "clear")
         
-        # Recherche du chemin via la topologie
-        chemin = self._topologie.trouver_chemin(paquet.source, paquet.destination)
+        if ch1 == 1: 
+            print("1- Switch")
+            print("2- Routeur")
+            print("3- Parefeu")
+            print("4- Point d'accès")
+            print("5- Terminal")
+            print("6- Serveur")
+            
+            while True:
+                try:
+                    ch11 = int(input("Quel équipement souhaitez-vous ajouter ? (choix 1 à 6) : "))
+                    break
+                except ValueError:
+                    print("Erreur : Veuillez entrer un chiffre entre 1 et 6.")
+                    
+            os.system("cls" if os.name == "nt" else "clear")
+            
+            while True:
+                nom = input("Entrer le nom de l'équipement: ").strip()
+                if nom: break  
+                print("Erreur : Veuillez entrer un nom valide.")
+            
+            while True:
+                marque = input("Entrer la marque de l'équipement: ").strip()
+                if marque: break  
+                print("Erreur : Veuillez entrer une marque valide.")
+            
+            while True:
+                adresse_str = input("Entrer l'adresse IP de l'équipement: ")
+                try:
+                    adresse = equipements.AdresseIP(adresse_str)
+                    break  
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+            
+            while True:
+                nb_int_str = input("Entrer le nombre d'interfaces: ")
+                if nb_int_str.isdigit():
+                    nb_int = int(nb_int_str)
+                    break  
+                print("Erreur : Veuillez entrer un nombre entier valide.")
+            
+            if ch11 == 1:
+                Eq = equipements.Switch(nom, marque, adresse, nb_int)
+                Topo.ajouter_equipement(Eq)
+            elif ch11 == 2:
+                Eq = equipements.Routeur(nom, marque, adresse, nb_int)
+                Topo.ajouter_equipement(Eq)
+            elif ch11 == 3:
+                Eq = equipements.Firewall(nom, marque, adresse, nb_int)
+                if not hasattr(Eq, 'journal'):
+                    Eq.journal = []
+                Topo.ajouter_equipement(Eq)
+            elif ch11 == 4:
+                while True:
+                    ss_id = input("Quel est le SSID du point d'accès: ").strip()
+                    if ss_id: break  
+                    print("Erreur : Veuillez entrer un SSID valide.")
+                Eq = equipements.PointAccesWiFi(nom, marque, adresse, nb_int, ss_id)
+                Topo.ajouter_equipement(Eq)
+            elif ch11 == 5:
+                Eq = equipements.TerminalClient(nom, marque, adresse, nb_int)
+                Topo.ajouter_equipement(Eq)
+            elif ch11 == 6:
+                Eq = equipements.Serveur(nom, marque, adresse, nb_int)
+                Topo.ajouter_equipement(Eq)
+            else:
+                print("Choix d'équipement indisponible !")
+                os.system("pause")
+                
+        elif ch1 == 2: 
+            while True:
+                ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
+                try:
+                    ad_eq1 = equipements.AdresseIP(ad_eq1)
+                    break  
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+                    
+            while True:
+                ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
+                try:
+                    ad_eq2 = equipements.AdresseIP(ad_eq2)
+                    break  
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+                    
+            equip1 = Topo.trouver_equipement(ad_eq1.ip)
+            equip2 = Topo.trouver_equipement(ad_eq2.ip)
+            
+            if equip1 is None or equip2 is None:
+                print("L'un des équipements entrés n'existe pas ! Impossible de créer un lien.")
+            else:
+                try:
+                    bp = float(input("Entrer la bande passante (en Mbps) : "))
+                    latence = float(input("Entrer la latence (en ms) : "))
+                    Topo.ajouter_lien(equip1, equip2, bp, latence)
+                    print("Lien ajouté avec succès entre les deux équipements.")
+                except ValueError:
+                    print("Erreur : La bande passante et la latence doivent être des nombres.")
+            os.system("pause")
+            
+        elif ch1 == 3: 
+            adresse_str = input("Donner l'adresse IP de l'équipement à supprimer : ")
+            equip = Topo.trouver_equipement(adresse_str)
+            if isinstance(equip, equipements.Equipement):
+                Topo.supprimer_equipement(equip)
+                print("Équipement supprimé de la topologie.")
+            else:
+                print("Il ne s'agit pas d'un équipement valide ou il n'existe pas.")
+            os.system("pause")
+            
+        elif ch1 == 4: 
+            while True:
+                ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
+                try:
+                    ad_eq1 = equipements.AdresseIP(ad_eq1)
+                    break  
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+                    
+            while True:
+                ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
+                try:
+                    ad_eq2 = equipements.AdresseIP(ad_eq2)
+                    break  
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+                    
+            equip1 = Topo.trouver_equipement(ad_eq1.ip)
+            equip2 = Topo.trouver_equipement(ad_eq2.ip)
+            
+            if equip1 is None or equip2 is None:
+                print("L'un des équipements entrés n'existe pas ! Le lien n'existe pas.")
+            else:
+                link = Topo.trouver_liens_equipement(equip1)
+                lien_supprime = False
+                for l in link:
+                    if isinstance(l, topologie.Lien) and l.autre_extremite(equip1) == equip2:
+                        Topo.supprimer_lien(l)
+                        lien_supprime = True
+                        print("Le lien a été supprimé avec succès.")
+                        break
+                if not lien_supprime:
+                    print("Aucun lien direct n'existe entre ces deux équipements.")
+            os.system("pause")
+        else:
+            print("Choix invalide !")
+            os.system("pause")
 
-        if not chemin:
-            print(f"Erreur : Destination {paquet.destination} inatteignable.")
-            self._moniteur.enregistrer_perte(paquet)
-            self._enregistrer_historique(paquet, False, [])
-            return False
+    elif choix == 2: 
+        print("Dans cette rubrique, vous aurez un aperçu de la topologie")
+        Topo.afficher_topologie()
+        os.system("pause")
+        
+    elif choix == 3: 
+        print("Dans cette rubrique, vous pourrez envoyer des paquets et visualiser leur parcours")
+        while True:
+            ad_eq1 = input("Entrer l'adresse IP source: ")
+            try:
+                ad_eq1 = equipements.AdresseIP(ad_eq1)
+                break  
+            except ValueError as e:
+                print(f"Erreur : {e}. Veuillez réessayer.")
+                
+        while True:
+            ad_eq2 = input("Entrer l'adresse IP de destination: ")
+            try:
+                ad_eq2 = equipements.AdresseIP(ad_eq2)
+                break  
+            except ValueError as e:
+                print(f"Erreur : {e}. Veuillez réessayer.")
+                
+        while True:
+            protoc = input("Quel protocole souhaitez-vous utiliser ? (ICMP, UDP, TCP): ").strip().upper()       
+            if protoc in ['ICMP', 'UDP', 'TCP']:
+                break
+            print("Erreur : Veuillez écrire explicitement ICMP, UDP ou TCP.")
 
-        print(f"Chemin trouvé : {' -> '.join(eq.nom for eq in chemin)}")
-
-        # Calcul de la performance (latence cumulée)
-        temps_total = 0.0
-        for i in range(len(chemin) - 1):
-            lien = self._topologie.obtenir_lien(chemin[i], chemin[i+1])
-            temps_total += lien.latence
-            print(f" Passage par {chemin[i]} -> {chemin[i+1]} ({lien.latence} ms)")
-
-        print(f"Paquet livre avec succes en {temps_total:.2f} ms.")
-        self._moniteur.enregistrer_envoi(paquet, temps_total)
-        self._enregistrer_historique(paquet, True, chemin)
-        return True
-
-    def _enregistrer_historique(self, paquet, succes, chemin):
-        if len(self._historique) >= 10:
-            self._historique.pop(0)
-        self._historique.append({
-            "paquet": paquet,
-            "succes": succes,
-            "chemin": chemin,
-            "heure": datetime.now().strftime("%H:%M:%S")
-        })
-
-    def afficher_historique(self):
-        print("\n--- Historique des 10 derniers paquets ---")
-        for ent in self._historique:
-            statut = "OK" if ent["succes"] else "ECHEC"
-            print(f"[{ent['heure']}] {statut} - {ent['paquet']}")
-
-
+        size = 0
+        while True:
+            size_str = input("Entrer la taille du paquet (entier positif): ").strip()
+            try:
+                size = int(size_str)
+                if size > 0: break
+                print("Erreur : la taille doit être un entier supérieur à 0.")
+            except ValueError:
+                print("Erreur : veuillez entrer un entier valide.")
+        
+        priority = 3
+        while True:
+            print("Priorité du paquet :")
+            print("1- Très Haute/Critique\n2- Haute\n3- Moyenne\n4- Basse\n5- Très basse")
+            priority_str = input("Entrer le chiffre de priorité (1 à 5): ").strip()
+            if priority_str.isdigit() and priority_str in ['1', '2', '3', '4', '5']:
+                priority = int(priority_str)
+                break
+            print("Erreur : Saisie invalide.")
+        
+        packet = paquets.Paquet(ad_eq1, ad_eq2, protoc, size, priority)
+        if isinstance(packet, paquets.Paquet):
+            simul.envoyer_paquet(packet)
+        else:
+            print("Pas de paquet disponible !")
+        os.system("pause")
+        
+    elif choix == 4: 
+        print("*"*5 + " JOURNAL D'ACTIVITÉ DES PARE-FEUX " + "*"*5)
+        
+        # Détection adaptative insensible à la casse pour inclure n'importe quelle orthographe de classe
+        firewalls = [eq for eq in Topo.equipements if "firewall" in eq.__class__.__name__.lower() or "parefeu" in eq.__class__.__name__.lower() or "pare_feu" in eq.__class__.__name__.lower()]
+        
+        if not firewalls:
+            print("\nAucun pare-feu n'est actuellement déployé dans la topologie.")
+        else:
+            for fw in firewalls:
+                ip_affiche = "Inconnue"
+                for attr_name in ['adresse', 'adresse_ip', '_adresse', 'ip']:
+                    if hasattr(fw, attr_name):
+                        attr = getattr(fw, attr_name)
+                        ip_affiche = getattr(attr, 'ip', str(attr))
+                        break
+                
+                print(f"\n--- Registre de sécurité pour : {fw.nom} [{ip_affiche}] ---")
+                
+                if not hasattr(fw, 'journal'):
+                    fw.journal = []
+                    
+                if not fw.journal:
+                    print("Aucun trafic inspecté pour le moment (Journal vide).")
+                else:
+                    for log in fw.journal:
+                        print(log)
+                        
+        print("\n" + "-"*45)
+        os.system("pause")
+        
+    elif choix == 5: 
+        print("Dans cette rubrique, vous aurez la possibilité de générer un rapport.")
+        if not isinstance(Topo, topologie.Topologie):
+            print("La topologie n'existe pas.")
+        else:
+            monitor.generer_rapport(Topo)
+        os.system("pause")
+        
+    elif choix == 6: 
+        print("Au revoir et à bientôt !!!")
+        Continue = False
+        os.system("pause")
+        
+    else: 
+        print("Les choix disponibles vont de 1 jusqu'à 6")
+        os.system("pause")
