@@ -300,9 +300,21 @@ while (Continue):
                 print("Choix indisponible !")
                 os.system("pause")
                 
-        elif ch1==2: # ajout d'un lien
-            ad_eq1=input("Entrer l'adresse IP du premier équipement: ")
-            ad_eq2=input("Entrer l'adresse IP du deuxième équipement: ")
+        elif ch1==2: # ajout d'un lien #verifier l'adresse
+            while True:
+                ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
+                try:
+                    ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                    break  # On sort de la boucle si aucune erreur n'est levée
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+            while True:
+                ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
+                try:
+                    ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                    break  # On sort de la boucle si aucune erreur n'est levée
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
             equip1=Topo.trouver_equipement(ad_eq1)
             equip2=Topo.trouver_equipement(ad_eq2)
             if equip1==None or equip2==None:
@@ -324,8 +336,20 @@ while (Continue):
             os.system("pause")
             
         elif ch1==4: #suppression d'un lien
-            ad_eq1=input("Entrer l'adresse IP du premier équipement: ")
-            ad_eq2=input("Entrer l'adresse IP du deuxième équipement: ")
+            while True:
+                ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
+                try:
+                    ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                    break  # On sort de la boucle si aucune erreur n'est levée
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
+            while True:
+                ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
+                try:
+                    ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                    break  # On sort de la boucle si aucune erreur n'est levée
+                except ValueError as e:
+                    print(f"Erreur : {e}. Veuillez réessayer.")
             equip1=Topo.trouver_equipement(ad_eq1)
             equip2=Topo.trouver_equipement(ad_eq2)
             if equip1==None or equip2==None:
@@ -348,9 +372,38 @@ while (Continue):
         
     elif choix==3: #envoi des paquets et vsiualisation de leur parcours, on va utiliser le fichier paquets.py
         print("Dans cette rubrique, vous pourrez envoyer des paquets et visualiser leur parcours")
-        adresse=input("Avec qui souhaitez-vous communiquer ?")
+        #on se rassure toujours que l'adresse du premier équipement a le bon format
+        while True:
+            ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
+            try:
+                ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                break  # On sort de la boucle si aucune erreur n'est levée
+            except ValueError as e:
+                print(f"Erreur : {e}. Veuillez réessayer.")
+        while True:
+            ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
+            try:
+                ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                break  # On sort de la boucle si aucune erreur n'est levée
+            except ValueError as e:
+                print(f"Erreur : {e}. Veuillez réessayer.")
+         
+         
+        protoc=input("""Quel protocole d'envoi de paquets souhaitez vous utilisez ?
+                            Les choix disponibles sont: ICMP, UDP et TCP: """)       
+        # while protoc not in paquets.PROTOCOLES_VALIDES:
+        #     protoc=input("""Les choix disponibles sont: ICMP, UDP et TCP: """)
+            
         #apès j'appelle la focntion d'envoi des paquets avec toutes les vérifcations utiles: validité de l'adresse IP, si elle appartient à un hote du réseau, publique ou privée
+        size=float(input("Entrer la taille du paquet: ")) #verification à faire, positivité
+        priority=int(input("Entrer la priorité du paquet: "))
+        packet=paquets.Paquet(ad_eq1, ad_eq2, protoc, size, priority)
+        if isinstance(packet, paquets.Paquet):
+            simul.envoyer_paquet(packet)
+        else:
+            print("Pas de paquet disponible !")
         os.system("pause")
+        
         
     elif choix==4: #journal du firewall
         print("Dans cette rubrique, le journal du parefeu sera affiché")
@@ -359,7 +412,10 @@ while (Continue):
         
     elif choix==5: #rapport et stats
         print("Dans cette rubrique, aurez la possibilité de générer un rapport texte, dans lequel seront présentées les statistiques ")
-        monitor.generer_rapport(Topo)
+        if not isinstance(Topo, topologie.Topologie):
+            print("La topologie n'existe pas.")
+        else:
+            monitor.generer_rapport(Topo)
         os.system("pause")
         
     elif choix==6: #quitter
