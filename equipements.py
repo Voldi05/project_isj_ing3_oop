@@ -1,5 +1,5 @@
 from abc import ABC , abstractmethod
-import datetime
+
 
 class AdresseIP:
     """Gère une adresse IPv4 avec validation et utilitaires."""
@@ -281,157 +281,23 @@ class Serveur(Equipement):
 
 
 class Firewall(Equipement):
-    """Firewall avec authentification, règles de filtrage, journalisation et inspection de paquets."""
-
-    def __init__(self, nomE, marqueE, adresse_ip, nb_interfaces, statut: bool = True, login_admin=None, mot_de_passe_admin=None):
-        """
-        Constructeur du firewall.
-        On ajoute les paramètres d'authentification (login et mot de passe) pour protéger la configuration.
-        """
-        super().__init__(nomE, marqueE, adresse_ip, nb_interfaces, statut)
-
-        # Stockage des identifiants administrateur
-        self.__login_admin = login_admin
-        # Hachage du mot de passe : on utilise une fonction simple (somme des codes ASCII) pour l'exercice
-        self.__password_hash = self._hasher(mot_de_passe_admin) if mot_de_passe_admin else None
-
-        # Liste des règles de filtrage (chaque règle est un dictionnaire)
-        self.__regles = []
-
-        # Journal des événements (logs) : chaque entrée est un dictionnaire avec timestamp
-        self.__journal = []
-
-    # ---------- Fonction de hachage simple ----------
-    @staticmethod
-    def _hasher(chaine):
-        """Hachage simple : additionne les codes ASCII des caractères. (Pédagogique, non sécurisé)"""
-        if not chaine:
-            return 0
-        return sum(ord(c) for c in chaine)
-
-    # ---------- Vérification des identifiants ----------
-    def _verifier_identifiants(self, login, mot_de_passe):
-        """Vérifie si le login et le mot de passe correspondent à ceux de l'admin."""
-        # On vérifie d'abord qu'un compte administrateur a bien été configuré
-        if not self.__login_admin or self.__password_hash is None:
-            raise PermissionError("Aucun compte administrateur configuré.")
-        if login != self.__login_admin:
-            return False
-        return self._hasher(mot_de_passe) == self.__password_hash
-
-    # ---------- Gestion des règles (authentification requise) ----------
-    def ajouter_regle(self, login, mot_de_passe, regle):
-        """
-        Ajoute une règle de filtrage après avoir vérifié les droits admin.
-        La règle est un dictionnaire avec les clés 'nom', 'action', 'condition'.
-        """
-        # On exige l'authentification avant toute modification des règles
-        if not self._verifier_identifiants(login, mot_de_passe):
-            raise PermissionError("Authentification échouée.")
+    """Firewall avec règles de filtrage."""
+    
+    def __init__(self, nomE, marqueE,adresse_ip, nb_interfaces,statut: bool = True):
+        super().__init__( nomE, marqueE, adresse_ip, nb_interfaces, statut)
+        self.__regles= []  # Les règles seront détaillées dans le Module 3
+        
+    
+    def ajouter_regle(self, regle: dict) :
+        """Ajoute une règle de filtrage."""
         self.__regles.append(regle)
-        self._journaliser_admin(f"Ajout de la règle '{regle.get('nom', 'sans nom')}'")
-        print(f"✓ Règle ajoutée : {regle.get('nom', 'sans nom')}")
-
-    def supprimer_regle(self, login, mot_de_passe, index):
-        """Supprime une règle par son index (authentification requise)."""
-        if not self._verifier_identifiants(login, mot_de_passe):
-            raise PermissionError("Authentification échouée.")
-        if 0 <= index < len(self.__regles):
-            regle = self.__regles.pop(index)
-            self._journaliser_admin(f"Suppression de la règle '{regle.get('nom', 'sans nom')}'")
-            print(f"✓ Règle supprimée : {regle.get('nom', 'sans nom')}")
-        else:
-            raise IndexError("Index invalide.")
-
+    
     @property
     def regles(self):
-        """Retourne une copie des règles (lecture seule, pas besoin d'authentification)."""
         return self.__regles.copy()
-
-    # ---------- Inspection de paquet ----------
-    def inspecter_paquet(self, paquet):
-        """
-        Applique les règles sur un paquet.
-        Le paquet doit avoir les attributs : ip_source, ip_dest, protocole, port_dest.
-        Retourne True si autorisé, False sinon.
-        """
-        # Parcours de toutes les règles dans l'ordre
-        for regle in self.__regles:
-            if self._regle_correspond(regle, paquet):
-                action = regle.get("action", "bloquer").lower()
-                decision = (action == "autoriser")   # True si autoriser, False si bloquer
-                self._journaliser_paquet(paquet, decision, regle)
-                return decision
-        # Si aucune règle ne correspond : politique par défaut = bloquer
-        self._journaliser_paquet(paquet, False, None)
-        return False
-
-    def _regle_correspond(self, regle, paquet):
-        """Vérifie si le paquet correspond aux conditions de la règle."""
-        cond = regle.get("condition", {})
-        # Comparaison simple : on compare l'IP source, le protocole, le port destination
-        ip_ok = (cond.get("ip_source") == paquet.ip_source) if "ip_source" in cond else True
-        proto_ok = (cond.get("protocole") == paquet.protocole) if "protocole" in cond else True
-        port_ok = (cond.get("port_dest") == paquet.port_dest) if "port_dest" in cond else True
-        return ip_ok and proto_ok and port_ok
-
-    # ---------- Journalisation ----------
-    def _journaliser_paquet(self, paquet, decision, regle):
-        """Ajoute une entrée au journal pour un paquet inspecté."""
-        entree = {
-            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "type": "paquet",
-            "source": paquet.ip_source,
-            "destination": paquet.ip_dest,
-            "protocole": paquet.protocole,
-            "port_dest": paquet.port_dest,
-            "decision": "AUTORISE" if decision else "BLOQUE",
-            "regle": regle.get("nom", "Défaut") if regle else "Défaut (blocage)"
-        }
-        self.__journal.append(entree)
-
-    def _journaliser_admin(self, message):
-        """Ajoute une entrée au journal pour une action administrative."""
-        entree = {
-            "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "type": "admin",
-            "message": message
-        }
-        self.__journal.append(entree)
-
-    def afficher_journal(self, login, mot_de_passe, n=10):
-        """Affiche les n dernières entrées du journal (authentification requise)."""
-        if not self._verifier_identifiants(login, mot_de_passe):
-            raise PermissionError("Authentification échouée.")
-        print(f"\n--- Journal du Firewall '{self.nom}' (dernières {n} entrées) ---")
-        for entree in self.__journal[-n:]:
-            print(entree)
-
-    def get_journal(self, login, mot_de_passe):
-        """Retourne une copie du journal (authentification requise)."""
-        if not self._verifier_identifiants(login, mot_de_passe):
-            raise PermissionError("Authentification échouée.")
-        return self.__journal.copy()
-
-    # ---------- Description du matériel ----------
-    def description_du_materiel(self):
-        """Retourne une description détaillée du firewall."""
-        desc = (f"Firewall '{self.nom}' ({self.marque})\n"
-                f"  Adresse IP : {self._adresse_ip}\n"
-                f"  Interfaces utilisées : {self._interfaces_occupees}/{self._nb_interfaces}\n"
-                f"  Nombre de règles : {len(self.__regles)}\n"
-                f"  Entrées de journal : {len(self.__journal)}\n"
-                f"  Politique par défaut : BLOQUER")
-        return desc
-
-    # ---------- Option : changer le mot de passe ----------
-    def changer_mot_de_passe(self, login, ancien_mdp, nouveau_mdp):
-        """Change le mot de passe administrateur après vérification de l'ancien."""
-        if not self._verifier_identifiants(login, ancien_mdp):
-            raise PermissionError("Authentification échouée.")
-        self.__password_hash = self._hasher(nouveau_mdp)
-        self._journaliser_admin("Changement du mot de passe administrateur")
-        print(" Mot de passe modifié.")
+    
+    def description_du_materiel(self) :
+        return f"Firewall - {len(self.__regles)} règle(s)"
 
 
 class PointAccesWiFi(Equipement):
@@ -473,7 +339,11 @@ class TerminalClient(Equipement):
     
     def description_du_materiel(self) :
         return "Terminal client"  
+
+
+            
+                  
+               
+        
     
-
-
 

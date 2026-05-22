@@ -7,7 +7,7 @@ import paquets
 
 #menu principal (bon le premier menu)
 def menu():
-    print("*"*5 + " Bienvenue dans le simulateur de réseau du groupe YAMEN" + "*"*5)
+    print("*"*5 + " Bienvenue dans le  SIMNET de réseau du groupe YAMEN" + "*"*5)
     print("1- Equipements et liens")
     print("2- Affichage de la topologie")
     print("3- Envoi de paquets et visualisation")
@@ -49,67 +49,251 @@ while (Continue):
             ch11=int(input("Quel équipement souhaitez-vous ajouter ? (faites un choix situé entre 1 et 4)"))
             os.system("cls")
             if ch11==1: #ajout d'un switch
-                continue11=True #pour gérer la boucle d'en bas
-                nom=input("Entrer le nom du switch: ")
-                marque=input("Enter la marque du switch: ")
-                adresse=input("Entrer l'adresse du switch: ")
-                # pour gérer le cas où quelqu'un entre une adresse IP invalide, on peut faire une boucle qui continue tant que l'adresse n'est pas valide
-                # while continue11:
-                #     try:
-                #         adresse=equipements.AdresseIP(adresse) #pour vérifier la validité de l'adresse IP
-                #         continue11=False
-                #     except ValueError as e:
-                #         print(f"✗ {adresse} → ERREUR INATTENDUE : {e}")
+                #pour le nom
+                while True:
+                    nom=input("Entrer le nom du switch: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
+                while True:
+                    marque=input("Enter la marque du switch: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du switch: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
                 
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces: "))
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")
+            
                 Eq_Switch=equipements.Switch(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Switch)
                 
             elif ch11==2: #ajout d'un routeur
-                nom=input("Entrer le nom du routeur: ")
-                marque=input("Enter la marque du routeur: ")
-                adresse=input("Entrer l'adresse du routeur: ")
+                #pour le nom
+                while True:
+                    nom=input("Entrer le nom du routeur: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
+                while True:
+                    marque=input("Enter la marque du routeur: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du routeur: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces: "))
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")
+                 
                 Eq_Routeur=equipements.Routeur(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Routeur)
                 
             elif ch11==3: #ajout d'un parefeu
-                nom=input("Entrer le nom du parefeu: ")
+                #pour le nom
+                while True:
+                    nom=input("Entrer le nom du parefeu: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
                 marque=input("Enter la marque du parefeu: ")
-                adresse=input("Entrer l'adresse du parefeu: ")
+                while True:
+                    marque=input("Entrer le nom du parefeu: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du parefeu: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
                 
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces: "))
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")    
+                
+                
                 Eq_parefeu=equipements.Firewall(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_parefeu)
                 
             elif ch11==4: #ajout d'un point d'accès
-                nom=input("Entrer le nom du point d'accès: ")
-                marque=input("Enter la marque du point d'accès: ")
-                adresse=input("Entrer l'adresse du point d'accès: ")
+                #pour le nom
+                while True:
+                    nom=input("Entrer le nom du point d'accès: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
+                while True:
+                    marque=input("Entrer le marque du point d'accès: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du point d'accès: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces: "))
-                ss_id=input("Quel est le ssid du point d'accès: ")
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")
+                
+                while True:
+                    ss_id=input("Quel est le ssid du point d'accès: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if ss_id:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
                 Eq_AP=equipements.PointAccesWiFi(nom, marque, adresse, nb_int, ss_id)
                 Topo.ajouter_equipement(Eq_AP)
 
             elif ch11==5: #ajout d'un terminal
-                nom=input("Entrer le nom du terminal: ")
-                marque=input("Enter la marque du terminal: ")
-                adresse=input("Entrer l'adresse du terminal: ")
+                while True:
+                    nom=input("Entrer le nom du terminal: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
+                while True:
+                    marque=input("Entrer le marque du terminal: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du terminal: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces du terminal: "))
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")
+                   
                 Eq_Terminal=equipements.TerminalClient(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Terminal)
 
             elif ch11==6: #ajour d'un serveur
-                nom=input("Entrer le nom du serveur: ")
-                marque=input("Enter la marque du serveur: ")
-                adresse=input("Entrer l'adresse du serveur: ")
+                
+                while True:
+                    nom=input("Entrer le nom du serveur: ")
+                    nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
+                    if nom:    
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nom valide.")
+                
+                #pour la marque
+                while True:
+                    marque=input("Entrer le marque du serveur: ")
+                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    if marque:    
+                        break  
+                    else:
+                        print("Erreur : Veuillez entrer une marque valide.")
+                
+                #pour l'adresse
+                while True:
+                    adresse = input("Entrer l'adresse du serveur: ")
+                    try:
+                        adresse = equipements.AdresseIP(adresse) # Vérification via ta classe
+                        break  # On sort de la boucle si aucune erreur n'est levée
+                    except ValueError as e:
+                        print(f"Erreur : {e}. Veuillez réessayer.")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
-                nb_int=int(input("Entrer le nombre d'interfaces du serveur: "))
+                while True:
+                    nb_int_str = input("Entrer le nombre d'interfaces: ")
+                    if nb_int_str.isdigit():
+                        nb_int = int(nb_int_str)
+                        break  # On sort si la conversion en entier est possible
+                    else:
+                        print("Erreur : Veuillez entrer un nombre entier valide.")
+                
                 Eq_Serveur=equipements.Serveur(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Serveur)
             else:
