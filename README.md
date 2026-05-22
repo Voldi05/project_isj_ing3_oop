@@ -139,3 +139,30 @@ dépôt officiel `st9-8/project_isj_ing3_oop`.
 **M. Stephane Fedim**  
 Institut Saint Jean - Parcours Ingénieur
 Année académique 2025-2026 · Semestre 2
+
+
+ # EXPLCATION DU LANCEMENT DE L'APPLICATION
+
+Bienvenue dans le dépôt de notre projet de POO, celui du groupe YAMEN. 
+Suivez les instructions ci-dessous pour installer et lancer le projet sur votre machine locale.
+
+# Étape 1 : Cloner le dépôt
+Ouvrez votre terminal (Git Bash, Terminal de commandes, etc.).
+Copiez et collez la commande suivante pour cloner le projet :
+git clone https://github.com/Voldi05/project_isj_ing3_oop.git
+
+# Étape 2 : Ouvrir le projet
+Lancez votre éditeur de code favori (VS Code, PyCharm, etc.).
+Allez dans File > Open Folder (Fichier > Ouvrir le dossier).
+Sélectionnez le dossier project_isj_ing3_oop que vous venez de cloner.
+
+# Étape 3 : Lancer l'application
+Une fois le projet ouvert dans votre éditeur :
+Naviguez vers le dossier src/.
+Ouvrez le fichier main.py.
+Lancez l'exécution du script.
+
+# Soutenez-nous
+Si vous appréciez ce travail ou s'il vous a été utile, n'hésitez pas à :
+Laisser une Star (un like) sur ce dépôt GitHub.
+Suivre notre profil pour rester informé de nos prochains projets !

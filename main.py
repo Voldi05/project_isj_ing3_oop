@@ -5,6 +5,7 @@ import topologie
 import securite
 import paquets
 
+#menu principal (bon le premier menu)
 def menu():
     print("*"*5 + " Bienvenue dans le simulateur de réseau du groupe YAMEN" + "*"*5)
     print("1- Equipements et liens")
@@ -15,9 +16,11 @@ def menu():
     print("6- Générer le rapport")
     print("7- Quitter")
 
+#déclaration de variables
 Continue=True #qui va permettre de gérer l'arret
 Topo=topologie.Topologie() #définition de notre topologie
-monitor=moniteur.Moniteur() #definition d'un moniteur qui servira à afficher le rapport
+monitor=moniteur.moniteur() #definition d'un moniteur qui servira à afficher le rapport
+simul=paquets.Simulateur(Topo, monitor) #définition du simulateur
 
 while (Continue):
     os.system("cls")
@@ -50,6 +53,7 @@ while (Continue):
                 nom=input("Entrer le nom du switch: ")
                 marque=input("Enter la marque du switch: ")
                 adresse=input("Entrer l'adresse du switch: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 Eq_Switch=equipements.Switch(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Switch)
@@ -57,6 +61,7 @@ while (Continue):
                 nom=input("Entrer le nom du routeur: ")
                 marque=input("Enter la marque du routeur: ")
                 adresse=input("Entrer l'adresse du routeur: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 Eq_Routeur=equipements.Routeur(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Routeur)
@@ -65,6 +70,7 @@ while (Continue):
                 nom=input("Entrer le nom du parefeu: ")
                 marque=input("Enter la marque du parefeu: ")
                 adresse=input("Entrer l'adresse du parefeu: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 Eq_parefeu=equipements.Firewall(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_parefeu)
@@ -73,6 +79,7 @@ while (Continue):
                 nom=input("Entrer le nom du point d'accès: ")
                 marque=input("Enter la marque du point d'accès: ")
                 adresse=input("Entrer l'adresse du point d'accès: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 ss_id=input("Quel est le ssid du point d'accès: ")
                 Eq_AP=equipements.PointAccesWiFi(nom, marque, adresse, nb_int, ss_id)
@@ -82,6 +89,7 @@ while (Continue):
                 nom=input("Entrer le nom du terminal: ")
                 marque=input("Enter la marque du terminal: ")
                 adresse=input("Entrer l'adresse du terminal: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces du terminal: "))
                 Eq_Terminal=equipements.TerminalClient(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Terminal)
@@ -90,6 +98,7 @@ while (Continue):
                 nom=input("Entrer le nom du serveur: ")
                 marque=input("Enter la marque du serveur: ")
                 adresse=input("Entrer l'adresse du serveur: ")
+                #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces du serveur: "))
                 Eq_Serveur=equipements.Serveur(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Serveur)
@@ -112,21 +121,26 @@ while (Continue):
             os.system("pause")
             
         elif ch1==3: # suppression d'un équipement
-            adresse=input("Donner l'adresse IP de l'équipement")
+            adresse=input("Donner l'adresse IP de l'équipement: ")
             equip=Topo.trouver_equipement(adresse)
-            if isinstance(equip):
+            if isinstance(equip, equipements.Equipement):
                 Topo.supprimer_equipement(equip)
             else:
                 print("Il ne s'agit pas d'un équipement")
             os.system("pause")
+            
         elif ch1==4: #suppression d'un lien
             ad_eq1=input("Entrer l'adresse IP du premier équipement: ")
             ad_eq2=input("Entrer l'adresse IP du deuxième équipement: ")
             equip1=Topo.trouver_equipement(ad_eq1)
             equip2=Topo.trouver_equipement(ad_eq2)
             if equip1==None or equip2==None:
-                print("L'un des équipements que vous avez entré n'existe pas ! Impossible de supprimer ce lien ! ")
-            #####revenir ici
+                print("L'un des équipements que vous avez entré n'existe pas ! Le lien n'existe pas ! ")
+            else:
+                link=Topo.trouver_liens_equipement(equip1)
+                for l in link:
+                    if isinstance(l, topologie.Lien) and l.autre_extremite(equip1)==equip2:
+                        Topo.supprimer_lien(l)                 
             
             os.system("pause")
         else:
@@ -134,6 +148,7 @@ while (Continue):
             os.system("pause")
 
     elif choix==2: #afficher la topologie
+        print("Dans cette rubrique, vous aurez un aperçu de la topolgie")
         Topo.afficher_topologie()
         os.system("pause")
         
@@ -144,20 +159,20 @@ while (Continue):
         os.system("pause")
         
     elif choix==4: #journal du firewall
+        print("Dans cette rubrique, le journal du parefeu sera affiché")
+        #
         os.system("pause")
         
-    elif choix==5:#affichage de statistiques
-        os.system("pause")
-        
-    elif choix==6: #rapport
+    elif choix==5: #rapport et stats
+        print("Dans cette rubrique, aurez la possibilité de générer un rapport texte, dans lequel seront présentées les statistiques ")
         monitor.generer_rapport(Topo)
         os.system("pause")
         
-    elif choix==7: #quitter
+    elif choix==6: #quitter
         print("Aurevoir et à bientôt !!!")
         Continue=False
         os.system("pause")
         
     else:
-        print("Les choix disponibles vont de 1 jusqu'à 7")
+        print("Les choix disponibles vont de 1 jusqu'à 6")
         os.system("pause")

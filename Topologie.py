@@ -174,7 +174,7 @@ class Topologie:
             autre = lien.autre_extremite(equipement)
             print(f"    {i}. ↔ {autre.nom} ({lien.bande_passante} Mbps, {lien.latence} ms)")
     
-    # ========== Affichage ==========
+    # Affichage
     
     def afficher_topologie(self):
         """Affiche toute la topologie."""
@@ -195,7 +195,7 @@ class Topologie:
             print("  Aucun lien")
         else:
             for lien in self.__liens:
-                print(f"  • {lien}")
+                print(f"  •  {lien}")
         
         print("\n--- Détail des connexions ---")
         for equipement in self.__equipements:
