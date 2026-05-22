@@ -129,7 +129,7 @@ class Equipement(ABC):
         self._nom = nomE
         self._marque = marqueE
         self._statut= statut
-        self._adresse_ip =AdresseIP(adresse_ip)
+        self._adresse_ip =adresse_ip
         self._nb_interfaces = nb_interfaces # Contient le nombre d'interface d'un equipement
         self._interfaces_occupees = 0
         Equipement._nb_equipements+=1
@@ -213,7 +213,7 @@ class Routeur(Equipement):
         self.__table_routage={}
         
         
-        
+    #a verifier    
     def ajouter_route(self, destination, next_hop) :
         """Ajoute une route vers une destination."""
         # Validation des adresses IP
