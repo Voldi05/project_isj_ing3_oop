@@ -43,6 +43,9 @@ class Lien:
             return self.__equipement1
         return None
     
+    def contains(self, equipement): # Pour compatibilité au cas où
+        return self.contient(equipement)
+
     def contient(self, equipement):
         """Vérifie si l'équipement fait partie du lien."""
         return equipement == self.__equipement1 or equipement == self.__equipement2
@@ -174,6 +177,53 @@ class Topologie:
             autre = lien.autre_extremite(equipement)
             print(f"    {i}. ↔ {autre.nom} ({lien.bande_passante} Mbps, {lien.latence} ms)")
     
+    # ========== Algorithme de Routage / Recherche de Chemin ==========
+    
+    def trouver_chemin(self, source, destination):
+        """
+        Trouve le chemin le plus court (en nombre de sauts) entre deux équipements ou adresses IP.
+        Retourne une liste d'équipements représentant le chemin, ou None s'il n'y a pas de chemin.
+        """
+        # Résolution des objets équipements si des objets AdresseIP ou chaînes ont été transmis
+        eq_source = source
+        eq_dest = destination
+        
+        if not isinstance(eq_source, Equipement):
+            ip_str = getattr(eq_source, 'ip', str(eq_source))
+            eq_source = self.trouver_equipement(ip_str)
+            
+        if not isinstance(eq_dest, Equipement):
+            ip_str = getattr(eq_dest, 'ip', str(eq_dest))
+            eq_dest = self.trouver_equipement(ip_str)
+            
+        if not eq_source or not eq_dest:
+            return None
+            
+        if eq_source == eq_dest:
+            return [eq_source]
+            
+        # Algorithme BFS (Breadth-First Search) pour trouver le plus court chemin
+        queue = [[eq_source]]
+        visite = {eq_source}
+        
+        while queue:
+            chemin_actuel = queue.pop(0)
+            noeud_actuel = chemin_actuel[-1]
+            
+            if noeud_actuel == eq_dest:
+                return chemin_actuel
+                
+            # Parcourir tous les voisins via les liens existants
+            for lien in self.trouver_liens_equipement(noeud_actuel):
+                voisin = lien.autre_extremite(noeud_actuel)
+                if voisin and voisin not in visite:
+                    visite.add(voisin)
+                    nouveau_chemin = list(chemin_actuel)
+                    nouveau_chemin.append(voisin)
+                    queue.append(nouveau_chemin)
+                    
+        return None # Aucun chemin trouvé
+
     # Affichage
     
     def afficher_topologie(self):
@@ -200,7 +250,12 @@ class Topologie:
         print("\n--- Détail des connexions ---")
         for equipement in self.__equipements:
             self.afficher_liens_equipement(equipement)
-    
+    def obtenir_lien(self, equipement1, equipement2):
+        """Retourne le lien existant entre deux équipements, ou None s'ils ne sont pas connectés."""
+        for lien in self.__liens:
+            if lien.contient(equipement1) and lien.contient(equipement2):
+                return lien
+        return None
     @property
     def equipements(self):
         return self.__equipements.copy()
@@ -208,5 +263,3 @@ class Topologie:
     @property
     def liens(self):
         return self.__liens.copy()
-
-

@@ -81,7 +81,7 @@ class Simulateur:
             self._enregistrer_historique(paquet, False, [])
             return False
 
-        print(f"Chemin trouvé : {' -> '.join(chemin)}")
+        print(f"Chemin trouvé : {' -> '.join(eq.nom for eq in chemin)}")
 
         # Calcul de la performance (latence cumulée)
         temps_total = 0.0

@@ -24,11 +24,15 @@ simul=paquets.Simulateur(Topo, monitor) #définition du simulateur
 while (Continue):
     os.system("cls")
     menu()
-    choix = int(input("Faites un choix s'il-vous-plaît: "))
-    # pour gérer le cas où quelqu'un entre une lettre à la place d'un chiffre
-    # if not choix.isdigit():
-    #     print("Le choix est un chiffre")
-    # else:
+    
+    # Gestion robuste de la saisie du menu principal
+    while True:
+        try:
+            choix = int(input("Faites un choix s'il-vous-plaît: "))
+            break
+        except ValueError:
+            print("Erreur : Veuillez entrer un chiffre valide entre 1 et 6.")
+            
     os.system("cls")
     
     if choix == 1:
@@ -37,7 +41,14 @@ while (Continue):
         print("2- Ajouter un lien")
         print("3- Supprimer un équipement")
         print("4- Supprimer un lien")
-        ch1=int(input("Que souhaitez-vous faire ? "))
+        
+        while True:
+            try:
+                ch1=int(input("Que souhaitez-vous faire ? "))
+                break
+            except ValueError:
+                print("Erreur : Veuillez entrer un chiffre valide.")
+                
         os.system("cls")
         if ch1==1: #ajout d'un équipement
             print("1- Switch")
@@ -46,7 +57,14 @@ while (Continue):
             print("4- Point d'accès")
             print("5- Terminal")
             print("6- Serveur")
-            ch11=int(input("Quel équipement souhaitez-vous ajouter ? (faites un choix situé entre 1 et 4)"))
+            
+            while True:
+                try:
+                    ch11 = int(input("Quel équipement souhaitez-vous ajouter ? (choix 1 à 6) : "))
+                    break
+                except ValueError:
+                    print("Erreur : Veuillez entrer un chiffre entre 1 et 6.")
+                    
             os.system("cls")
             if ch11==1: #ajout d'un switch
                 #pour le nom
@@ -54,7 +72,7 @@ while (Continue):
                     nom=input("Entrer le nom du switch: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
@@ -94,7 +112,7 @@ while (Continue):
                     nom=input("Entrer le nom du routeur: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
@@ -124,7 +142,7 @@ while (Continue):
                         break  # On sort si la conversion en entier est possible
                     else:
                         print("Erreur : Veuillez entrer un nombre entier valide.")
-                 
+                     
                 Eq_Routeur=equipements.Routeur(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Routeur)
                 
@@ -134,14 +152,14 @@ while (Continue):
                     nom=input("Entrer le nom du parefeu: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
                 #pour la marque
                 while True:
                     marque=input("Entrer la marque du parefeu: ")
-                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    marque=marque.strip() 
                     if marque:    
                         break  
                     else:
@@ -165,7 +183,6 @@ while (Continue):
                     else:
                         print("Erreur : Veuillez entrer un nombre entier valide.")    
                 
-                
                 Eq_parefeu=equipements.Firewall(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_parefeu)
                 
@@ -175,7 +192,7 @@ while (Continue):
                     nom=input("Entrer le nom du point d'accès: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
@@ -208,11 +225,11 @@ while (Continue):
                 
                 while True:
                     ss_id=input("Quel est le ssid du point d'accès: ")
-                    marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
+                    ss_id=ss_id.strip() 
                     if ss_id:    
                         break  
                     else:
-                        print("Erreur : Veuillez entrer une marque valide.")
+                        print("Erreur : Veuillez entrer un SSID valide.")
                 
                 Eq_AP=equipements.PointAccesWiFi(nom, marque, adresse, nb_int, ss_id)
                 Topo.ajouter_equipement(Eq_AP)
@@ -222,7 +239,7 @@ while (Continue):
                     nom=input("Entrer le nom du terminal: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
@@ -252,23 +269,22 @@ while (Continue):
                         break  # On sort si la conversion en entier est possible
                     else:
                         print("Erreur : Veuillez entrer un nombre entier valide.")
-                   
+                       
                 Eq_Terminal=equipements.TerminalClient(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Terminal)
 
-            elif ch11==6: #ajour d'un serveur
-                
+            elif ch11==6: #ajout d'un serveur
                 while True:
                     nom=input("Entrer le nom du serveur: ")
                     nom=nom.strip() #pour enlever les espaces au début et à la fin du nom
                     if nom:    
-                        break  # On sort si la conversion en entier est possible
+                        break  
                     else:
                         print("Erreur : Veuillez entrer un nom valide.")
                 
                 #pour la marque
                 while True:
-                    marque=input("Entrer la marque du serveur: ")
+                    marque=input("Entrer le marque du serveur: ")
                     marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
                     if marque:    
                         break  
@@ -304,18 +320,18 @@ while (Continue):
                 ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
                 try:
                     ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
-                    break  # On sort de la boucle si aucune erreur n'est levée
+                    break  
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
             while True:
                 ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
                 try:
                     ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
-                    break  # On sort de la boucle si aucune erreur n'est levée
+                    break  
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
-            equip1=Topo.trouver_equipement(ad_eq1)
-            equip2=Topo.trouver_equipement(ad_eq2)
+            equip1=Topo.trouver_equipement(ad_eq1.ip)
+            equip2=Topo.trouver_equipement(ad_eq2.ip)
             if equip1==None or equip2==None:
                 print("L'un des équipements que vous avez entré n'existe pas ! Impossible de créer un lien ! ")
             else:
@@ -339,25 +355,25 @@ while (Continue):
                 ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
                 try:
                     ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
-                    break  # On sort de la boucle si aucune erreur n'est levée
+                    break  
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
             while True:
                 ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
                 try:
                     ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
-                    break  # On sort de la boucle si aucune erreur n'est levée
+                    break  
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
-            equip1=Topo.trouver_equipement(ad_eq1)
-            equip2=Topo.trouver_equipement(ad_eq2)
+            equip1=Topo.trouver_equipement(ad_eq1.ip)
+            equip2=Topo.trouver_equipement(ad_eq2.ip)
             if equip1==None or equip2==None:
                 print("L'un des équipements que vous avez entré n'existe pas ! Le lien n'existe pas ! ")
             else:
                 link=Topo.trouver_liens_equipement(equip1)
                 for l in link:
                     if isinstance(l, topologie.Lien) and l.autre_extremite(equip1)==equip2:
-                        Topo.supprimer_lien(l)                 
+                        Topo.supprimer_lien(l)                  
             
             os.system("pause")
         else:
@@ -369,34 +385,44 @@ while (Continue):
         Topo.afficher_topologie()
         os.system("pause")
         
-    elif choix==3: #envoi des paquets et vsiualisation de leur parcours, on va utiliser le fichier paquets.py
+    elif choix==3: #envoi des paquets et visualisation de leur parcours
         print("Dans cette rubrique, vous pourrez envoyer des paquets et visualiser leur parcours")
-        #on se rassure toujours que l'adresse du premier équipement a le bon format
         while True:
             ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
             try:
                 ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
-                break  # On sort de la boucle si aucune erreur n'est levée
+                break  
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
-        #on se rassure toujours que l'adresse du deuxièmeéquipement a le bon format
+                
         while True:
             ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
             try:
-                ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
-                break  # On sort de la boucle si aucune erreur n'est levée
+                ad_eq2 = equipements.AdresseIP(ad_eq2) # Vérification via ta classe
+                break  
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
-         #protocole     
+                
         while True:
             protoc = input("Quel protocole souhaitez-vous utiliser ? (ICMP, UDP, TCP): ").strip().upper()       
             if protoc in ['ICMP', 'UDP', 'TCP']:
                 break
             print("Erreur : Veuillez écrire explicitement ICMP, UDP ou TCP (pas de chiffre).")
 
-            
-        size=float(input("Entrer la taille du paquet: ")) #verification à faire, positivité
+        # Initialisation explicite de la taille pour éviter le NameError
+        size = 0
+        while True:
+            size_str = input("Entrer la taille du paquet (entier strictement positif): ").strip()
+            try:
+                size = int(size_str)
+                if size > 0:
+                    break
+                print("Erreur : la taille doit être un entier strictement positif.")
+            except ValueError:
+                print("Erreur : veuillez entrer un entier valide.")
         
+        # Initialisation explicite de la priorité pour éviter le NameError
+        priority = 3
         while True:
             print("Priorité du paquet :")
             print("1- Très Haute/Critique")
@@ -411,17 +437,15 @@ while (Continue):
                 break
             print("Erreur : Veuillez entrer un chiffre valide (1, 2, 3, 4 ou 5).")
         
-        packet=paquets.Paquet(ad_eq1, ad_eq2, protoc, size, priority)
+        packet = paquets.Paquet(ad_eq1, ad_eq2, protoc, size, priority)
         if isinstance(packet, paquets.Paquet):
             simul.envoyer_paquet(packet)
         else:
             print("Pas de paquet disponible !")
         os.system("pause")
         
-        
     elif choix==4: #journal du firewall
         print("Dans cette rubrique, le journal du parefeu sera affiché")
-        #
         os.system("pause")
         
     elif choix==5: #rapport et stats
