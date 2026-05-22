@@ -16,8 +16,8 @@ class Paquet:
                  protocole: str, taille: int, priorite: int):
         
         # Validation des adresses via la classe AdresseIP du module equipement
-        self._source = AdresseIP(source)
-        self._destination = AdresseIP(destination)
+        self._source = source
+        self._destination = destination
 
         # Validation du protocole
         if protocole not in PROTOCOLES_VALIDES:

@@ -380,6 +380,7 @@ while (Continue):
                 break  # On sort de la boucle si aucune erreur n'est levée
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
+        #on se rassure toujours que l'adresse du deuxièmeéquipement a le bon format
         while True:
             ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
             try:
@@ -387,16 +388,30 @@ while (Continue):
                 break  # On sort de la boucle si aucune erreur n'est levée
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
-         
-         
-        protoc=input("""Quel protocole d'envoi de paquets souhaitez vous utilisez ?
-                            Les choix disponibles sont: ICMP, UDP et TCP: """)       
-        # while protoc not in paquets.PROTOCOLES_VALIDES:
-        #     protoc=input("""Les choix disponibles sont: ICMP, UDP et TCP: """)
+         #protocole     
+        while True:
+            protoc = input("Quel protocole souhaitez-vous utiliser ? (ICMP, UDP, TCP): ").strip().upper()       
+            if protoc in ['ICMP', 'UDP', 'TCP']:
+                break
+            print("Erreur : Veuillez écrire explicitement ICMP, UDP ou TCP (pas de chiffre).")
+
             
-        #apès j'appelle la focntion d'envoi des paquets avec toutes les vérifcations utiles: validité de l'adresse IP, si elle appartient à un hote du réseau, publique ou privée
         size=float(input("Entrer la taille du paquet: ")) #verification à faire, positivité
-        priority=int(input("Entrer la priorité du paquet: "))
+        
+        while True:
+            print("Priorité du paquet :")
+            print("1- Très Haute/Critique")
+            print("2- Haute")
+            print("3- Moyenne")
+            print("4- Basse")
+            print("5- Très basse")
+            
+            priority_str = input("Entrer le chiffre de priorité (1, 2, 3, 4 ou 5): ").strip()
+            if priority_str.isdigit() and priority_str in ['1', '2', '3', '4', '5']:
+                priority = int(priority_str)
+                break
+            print("Erreur : Veuillez entrer un chiffre valide (1, 2, 3, 4 ou 5).")
+        
         packet=paquets.Paquet(ad_eq1, ad_eq2, protoc, size, priority)
         if isinstance(packet, paquets.Paquet):
             simul.envoyer_paquet(packet)

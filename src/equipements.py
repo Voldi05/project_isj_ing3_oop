@@ -60,7 +60,7 @@ class AdresseIP:
     def ip(self, val):
         """Definition du Setter sur l'adresse ip """
         if val is None:
-            raise ValueError("Vous devez préciser l'adresse ip a ajouté")
+            raise ValueError("Vous devez préciser l'adresse ip à ajouter")
         
         if not isinstance(val, str):
             raise TypeError("L'adresse IP doit être une chaîne de caractères")
