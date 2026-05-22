@@ -1,0 +1,16 @@
+-------Rapport d'exploitation SIMNET-----
+Date de generation : 2026-05-22 23:22:54
+
+-----Statut des équipements-----:
+Equipement:R1          | statut:ACTIF
+Equipement:R2          | statut:ACTIF
+
+-----Historique de trafic-----
+
+-----Taux d'usage des liens----
+lien R1_R2                    : 0.00% d'utilisation (0 octets transmis)
+
+ -----Historique des 10 derniers paquets-----
+[2026-05-22 23:19:46] TCP de 192.168.1.1 a 192.168.1.2 de taille 1500 octets (Livre en 5.00 ms)
+
+-----Fin du rapport d'exploitation-----
