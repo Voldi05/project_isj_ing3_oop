@@ -68,9 +68,7 @@ Lancez l'exécution du script.
     
 # 2- Visualisation des paquets 
     Pour ce cas, deux classes sont crées: Paquet et Simulateur.
-    La classe Paquet permet d'identifeir les paquets (les messages) qui transitent dans le réseau. La classe Simulateur permet d'avoir un état sur la transmission des paq
-    Créer des paquets réseau réalistes avec validation stricte
-    Simuler leur transmission dans une topologie réseau
+    La classe Paquet permet d'identifeir les paquets (les messages) qui transitent dans le réseau. La classe Simulateur permet d'avoir un état sur la transmission des paquets. Ce module est utile pour créer des paquets réseau réalistes avec validation stricte et simuler leur transmission dans une topologie réseau
 
 # 3- Sécurité
     Le parefeu est comme le gardien de notre réseau. C'est lui qui décide de qui entre ou pas, qui envoie quoi à qui ou pas. Et pour cela, il a besoin de règles et à cet effet nous avons créé une classe Regle qui gère ces cas de figures. 
@@ -83,13 +81,13 @@ Lancez l'exécution du script.
     nous avons géré autant que possible les exceptions au niveau des erreur ssur les types, les valeurs. Pour le moment, nous n'avons pas concevoir une interface graphique mais cela fait partie d'une des améliorations futures. Nous l'implémenterons avec les modules python customTkinter et tkinter. 
 
 ## NOMS DES MEMBRES DU GROUPE 5 (YAMEN)
-   FOTSO ERYANGE VERDIANE
-   NJOYA ARIEL RYAN
-   SEUMO YANN BERTRAND
-   NTANDZI CLAUDE MANUELLA
-   NINKAM NOEMIE
+   - FOTSO ERYANGE VERDIANE
+   - NJOYA ARIEL RYAN
+   - SEUMO YANN BERTRAND
+   - NTANDZI CLAUDE MANUELLA
+   - NINKAM NOEMIE
 
-# Soutenez-nous
+# Soutenez-nous !
 Si vous appréciez ce travail ou s'il vous a été utile, n'hésitez pas à :
 Laisser une Star (un like) sur ce dépôt GitHub.
 Suivre notre profil pour rester informé de nos prochains projets !
