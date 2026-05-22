@@ -37,111 +37,8 @@ project_isj_ing3_oop/
 └── README.md               # Ce fichier (à compléter par le groupe)
 ```
 
----
 
-## Lancement
-
-```bash
-python src/main.py
-```
-
-> Python 3.8+ requis. Aucune dépendance externe.
-
----
-
-##  Workflow de soumission
-
-### 1. Forker le dépôt
-
-Cliquer sur **Fork** en haut à droite de cette page.
-Un seul membre du groupe effectue le fork.
-
-### 2. Cloner le fork
-
-```bash
-git clone https://github.com/<votre-compte>/project_isj_ing3_oop.git
-cd project_isj_ing3_oop
-```
-
-### 3. Créer la branche du groupe
-
-Le nom de branche doit correspondre **exactement** à votre numéro de groupe :
-
-```bash
-git checkout -b group_1   # adapter : group_1, group_2, group_3 ...
-```
-
-### 4. Développer et committer régulièrement
-
-```bash
-git add .
-git commit -m "feat: ajout de la classe Routeur et de la topologie"
-git push origin group_1
-```
-
-> Un historique de commits régulier est attendu. Un seul commit massif
-> en fin de semaine sera pénalisé.
-
-### 5. Ouvrir une Merge Request
-
-Depuis votre fork, ouvrir une **Merge Request** vers la branche `main` du
-dépôt officiel `st9-8/project_isj_ing3_oop`.
-
-- **Titre :** `[Groupe X] SIMNet — NomDuGroupe`
-- **Description :** fonctionnalités implémentées, noms des membres, remarques éventuelles
-
-> Ne pas merger la Merge Request vous-même. Elle sera consultée et validée
-> par l'examinateur lors de la correction.
-
----
-
-## Modules fonctionnels
-
-| Module | Description |
-|--------|-------------|
-| 1 — Modélisation | Équipements réseau, topologie, liens |
-| 2 — Trafic | Paquets, routage saut par saut, statistiques |
-| 3 — Sécurité | Firewall, règles de filtrage, journal horodaté |
-| 4 — Surveillance | Moniteur réseau, métriques, export rapport |
-| 5 — Interface | Menu console interactif |
-
----
-
-## Groupes
-
-| Branche | Groupe | Membres |
-|---------|--------|---------|
-| `group_1` | — | — |
-| `group_2` | — | — |
-| `group_3` | — | — |
-| `group_4` | — | — |
-| `group_5` | — | — |
-
-> Ce tableau sera mis à jour par l'examinateur au démarrage du projet.
-
----
-
-## Évaluation
-
-| Critère | Points |
-|---------|--------|
-| Fonctionnement du simulateur | 6 |
-| Qualité de la modélisation POO | 5 |
-| Couverture des concepts du cours | 4 |
-| Rapport technique | 3 |
-| Soutenance et maîtrise individuelle | 2 |
-| **Total** | **20** |
-
----
-
-##  Examinateur
-
-**M. Stephane Fedim**  
-Institut Saint Jean - Parcours Ingénieur
-Année académique 2025-2026 · Semestre 2
-
-
- # EXPLCATION DU LANCEMENT DE L'APPLICATION
+## EXPLCATION DU LANCEMENT DE L'APPLICATION
 
 Bienvenue dans le dépôt de notre projet de POO, celui du groupe YAMEN. 
 Suivez les instructions ci-dessous pour installer et lancer le projet sur votre machine locale.
@@ -161,6 +58,36 @@ Une fois le projet ouvert dans votre éditeur :
 Naviguez vers le dossier src/.
 Ouvrez le fichier main.py.
 Lancez l'exécution du script.
+
+## DESCRIPTION DES FONCTIONNALITES IMPLEMENTEES
+
+# 1- Création des "équipements", gestion de la topologie: 
+    Nous avons crééune classe AdresseIP qui définit notre type adresse en gérant la validité de celle-ci (nombre d'octets, privée ou publique).
+
+    Nous sommes allés sur la base d'une classe abstraite nommée Equipement à partir de laquelle sont nées d'autres classe filles: Switch, Routeur, Parefeu, Serveur, Terminal(qui fait référence au client), Serveur. Chacune de ses classes filles devra obligatoirement hériter des méthodes de leur classe mère Equuipement.
+    
+# 2- Visualisation des paquets 
+    Pour ce cas, deux classes sont crées: Paquet et Simulateur.
+    La classe Paquet permet d'identifeir les paquets (les messages) qui transitent dans le réseau. La classe Simulateur permet d'avoir un état sur la transmission des paq
+    Créer des paquets réseau réalistes avec validation stricte
+    Simuler leur transmission dans une topologie réseau
+
+# 3- Sécurité
+    Le parefeu est comme le gardien de notre réseau. C'est lui qui décide de qui entre ou pas, qui envoie quoi à qui ou pas. Et pour cela, il a besoin de règles et à cet effet nous avons créé une classe Regle qui gère ces cas de figures. 
+
+# 4- Rapport et statistiques
+    Sous un format accessible qu'est le texte, il sera possible d'avoir sous la main les informations de notre topologie si elle existe. Pour cela, nous avons ecrit une foncion generer_rapport
+
+# 5- Menu principal
+    Nous avons fourni un menu principal simple à l'usage et intuitf. dans ce menu, 
+    nous avons géré autant que possible les exceptions au niveau des erreur ssur les types, les valeurs. Pour le moment, nous n'avons pas concevoir une interface graphique mais cela fait partie d'une des améliorations futures. Nous l'implémenterons avec les modules python customTkinter et tkinter. 
+
+## NOMS DES MEMBRES DU GROUPE 5 (YAMEN)
+   FOTSO ERYANGE VERDIANE
+   NJOYA ARIEL RYAN
+   SEUMO YANN BERTRAND
+   NTANDZI CLAUDE MANUELLA
+   NINKAM NOEMIE
 
 # Soutenez-nous
 Si vous appréciez ce travail ou s'il vous a été utile, n'hésitez pas à :
