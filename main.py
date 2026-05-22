@@ -12,9 +12,8 @@ def menu():
     print("2- Affichage de la topologie")
     print("3- Envoi de paquets et visualisation")
     print("4- Journal du firewall")
-    print("5- Affichage de statistiques")
-    print("6- Générer le rapport")
-    print("7- Quitter")
+    print("5- Rapport et statistiques")
+    print("6- Quitter")
 
 #déclaration de variables
 Continue=True #qui va permettre de gérer l'arret
@@ -50,13 +49,23 @@ while (Continue):
             ch11=int(input("Quel équipement souhaitez-vous ajouter ? (faites un choix situé entre 1 et 4)"))
             os.system("cls")
             if ch11==1: #ajout d'un switch
+                continue11=True #pour gérer la boucle d'en bas
                 nom=input("Entrer le nom du switch: ")
                 marque=input("Enter la marque du switch: ")
                 adresse=input("Entrer l'adresse du switch: ")
+                # pour gérer le cas où quelqu'un entre une adresse IP invalide, on peut faire une boucle qui continue tant que l'adresse n'est pas valide
+                # while continue11:
+                #     try:
+                #         adresse=equipements.AdresseIP(adresse) #pour vérifier la validité de l'adresse IP
+                #         continue11=False
+                #     except ValueError as e:
+                #         print(f"✗ {adresse} → ERREUR INATTENDUE : {e}")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 Eq_Switch=equipements.Switch(nom, marque, adresse, nb_int)
                 Topo.ajouter_equipement(Eq_Switch)
+                
             elif ch11==2: #ajout d'un routeur
                 nom=input("Entrer le nom du routeur: ")
                 marque=input("Enter la marque du routeur: ")
@@ -70,6 +79,7 @@ while (Continue):
                 nom=input("Entrer le nom du parefeu: ")
                 marque=input("Enter la marque du parefeu: ")
                 adresse=input("Entrer l'adresse du parefeu: ")
+                
                 #il faut gérer le fait que nb_int doit etre un digit
                 nb_int=int(input("Entrer le nombre d'interfaces: "))
                 Eq_parefeu=equipements.Firewall(nom, marque, adresse, nb_int)
@@ -173,6 +183,6 @@ while (Continue):
         Continue=False
         os.system("pause")
         
-    else:
+    else: 
         print("Les choix disponibles vont de 1 jusqu'à 6")
         os.system("pause")
