@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections import deque
 
-class Moniteur:
+class moniteur:
     """gerer la surveillance du reseau , collecter les statistiques et generer le rapport d'exploitation"""
     def __init__(self):
 
