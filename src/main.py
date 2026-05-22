@@ -304,14 +304,14 @@ while (Continue):
             while True:
                 ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
                 try:
-                    ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                    ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
                     break  # On sort de la boucle si aucune erreur n'est levée
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
             while True:
                 ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
                 try:
-                    ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                    ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
                     break  # On sort de la boucle si aucune erreur n'est levée
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
@@ -339,14 +339,14 @@ while (Continue):
             while True:
                 ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
                 try:
-                    ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                    ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
                     break  # On sort de la boucle si aucune erreur n'est levée
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
             while True:
                 ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
                 try:
-                    ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                    ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
                     break  # On sort de la boucle si aucune erreur n'est levée
                 except ValueError as e:
                     print(f"Erreur : {e}. Veuillez réessayer.")
@@ -376,14 +376,14 @@ while (Continue):
         while True:
             ad_eq1 = input("Entrer l'adresse IP du premier équipement: ")
             try:
-                ad_eq1 = equipements.AdresseIP(adresse) # Vérification via ta classe
+                ad_eq1 = equipements.AdresseIP(ad_eq1) # Vérification via ta classe
                 break  # On sort de la boucle si aucune erreur n'est levée
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
         while True:
             ad_eq2 = input("Entrer l'adresse IP du deuxième équipement: ")
             try:
-                ad_eq2= equipements.AdresseIP(adresse) # Vérification via ta classe
+                ad_eq2= equipements.AdresseIP(ad_eq2) # Vérification via ta classe
                 break  # On sort de la boucle si aucune erreur n'est levée
             except ValueError as e:
                 print(f"Erreur : {e}. Veuillez réessayer.")
