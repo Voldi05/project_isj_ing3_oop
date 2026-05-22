@@ -139,9 +139,8 @@ while (Continue):
                         print("Erreur : Veuillez entrer un nom valide.")
                 
                 #pour la marque
-                marque=input("Enter la marque du parefeu: ")
                 while True:
-                    marque=input("Entrer le nom du parefeu: ")
+                    marque=input("Entrer la marque du parefeu: ")
                     marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
                     if marque:    
                         break  
@@ -269,7 +268,7 @@ while (Continue):
                 
                 #pour la marque
                 while True:
-                    marque=input("Entrer le marque du serveur: ")
+                    marque=input("Entrer la marque du serveur: ")
                     marque=marque.strip() #pour enlever les espaces au début et à la fin du nom
                     if marque:    
                         break  

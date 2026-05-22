@@ -1,5 +1,6 @@
 import datetime
 import paquets
+from equipements import Firewall
 
 # Une règle dit si un paquet doit être AUTORISÉ ou BLOQUÉ selon certains critères 
 
